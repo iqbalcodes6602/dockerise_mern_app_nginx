@@ -1,0 +1,4 @@
+for frontend when using nginx
+1. connect to backend using
+        REACT_APP_API_URI=/api
+

@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "3000"
+    environment:
+      - REACT_APP_BACKEND_URL=/api
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "8000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/shareit
+      - PORT=8000
+    depends_on:
+      - mongo
+
+  proxy:
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    container_name: proxy
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+
+  mongo:
+    image: mongo:5.0
+    container_name: mongo
+    ports:
+      - "27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
